@@ -79,7 +79,11 @@ function analyzeSalesData(data, options) {
         const seller = sellerIndex[record.seller_id];
         if (!seller) return;
         seller.sales_count += 1;
-        const checkRevenue = (record.total_amount || 0) - (record.total_discount || 0);
+        let checkRevenue = 0;
+        (record.items || []).forEach(item => {
+            const product = productIndex[item.sku];
+            checkRevenue += calculateRevenue(item, product);
+        });
         seller.revenue += checkRevenue;
 
         //считаем прибыль по чеку
