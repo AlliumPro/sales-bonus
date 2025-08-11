@@ -80,15 +80,17 @@ function analyzeSalesData(data, options) {
         if (!seller) return;
         seller.sales_count += 1;
 
-        // Считаем выручку по чеку с округлением
-        let checkRevenue = 0;
+        // Считаем выручку по чеку как сумму выручек позиций, округляя каждую позицию до центов
+        let checkRevenueCents = 0;
         (record.items || []).forEach(item => {
             const product = productIndex[item.sku];
-            checkRevenue += calculateRevenue(item, product);
+            const revenueRaw = calculateRevenue(item, product);
+            const itemCents = Math.round(revenueRaw * 100);
+            checkRevenueCents += itemCents;
         });
-        seller.revenue += +checkRevenue.toFixed(2);
+        seller.revenue += checkRevenueCents / 100;
 
-        // Считаем прибыль по чеку
+        // Считаем прибыль по чеку (без промежуточного округления по позициям)
         (record.items || []).forEach(item => {
             const product = productIndex[item.sku];
             const quantity = item.quantity || 0;
