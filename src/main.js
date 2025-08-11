@@ -79,14 +79,16 @@ function analyzeSalesData(data, options) {
         const seller = sellerIndex[record.seller_id];
         if (!seller) return;
         seller.sales_count += 1;
+
+        // Считаем выручку по чеку с округлением
         let checkRevenue = 0;
         (record.items || []).forEach(item => {
             const product = productIndex[item.sku];
             checkRevenue += calculateRevenue(item, product);
         });
-        seller.revenue += checkRevenue;
+        seller.revenue += +checkRevenue.toFixed(2);
 
-        //считаем прибыль по чеку
+        // Считаем прибыль по чеку
         (record.items || []).forEach(item => {
             const product = productIndex[item.sku];
             const quantity = item.quantity || 0;
