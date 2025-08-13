@@ -94,9 +94,9 @@ function analyzeSalesData(data, options) {
         (record.items || []).forEach(item => {
             const product = productIndex[item.sku];
             const quantity = item.quantity || 0;
-            const cost = (product?.purchase_price || 0) * quantity; // себестоимость
-            const revenue = calculateRevenue(item, product); // выручка с учетом скидки
-            const profit = revenue - cost; // прибыль по позиции
+            const cost = (product?.purchase_price || 0) * quantity;
+            const revenue = calculateRevenue(item, product);
+            const profit = revenue - cost;
             seller.profit += profit;
 
             // Учёт количества проданных товаров
@@ -107,7 +107,7 @@ function analyzeSalesData(data, options) {
         });
     });
 
-    // Сортировка продавцов по прибыли (по убыванию)
+    // Сортировка продавцов
     sellerStats.sort((a, b) => b.profit - a.profit);
 
     // Назначение премий и формирование топ-10 товаров
@@ -124,8 +124,8 @@ function analyzeSalesData(data, options) {
         seller_id: seller.id,
         name: seller.name,
         revenue: +seller.revenue.toFixed(2),
-        profit: +seller.profit.toFixed(2),
         sales_count: seller.sales_count,
+        profit: +seller.profit.toFixed(2),
         top_products: seller.top_products,
         bonus: +seller.bonus.toFixed(2)
     }));
